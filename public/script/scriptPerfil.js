@@ -1,13 +1,4 @@
 $(document).ready(function(){
-    var imagenes = [
-        'images/1.jpeg',
-        'images/2.jpg',
-        'images/3.webp',
-        'images/4.jpg',
-        'images/5.jpeg',
-        'images/4.jpg',
-        'images/5.jpeg'
-    ];
 
     $('#fotoperfil').attr({
         'src': 'images/1.jpeg',
@@ -15,13 +6,42 @@ $(document).ready(function(){
         'class': 'perfil-foto me-3'
     });
 
-    $('#galeria').empty();
+    function cargarGaleria() {
+        $.get('/fotos/sergio', function(fotos) {
+            $('#galeria').empty(); // Limpia la galería antes de cargar nuevas fotos
+            fotos.forEach(function(foto) {
+                $('#galeria').append($('<img>', {
+                    src: foto.imageUrl,
+                    alt: foto.imageName,
+                    'class': 'img-fluid'
+                }));
+            });
+        }).fail(function() {
+            console.error('Error al cargar las fotos');
+            $('#galeria').append('<p>Error al cargar las fotos.</p>');
+        });
+    }
+    cargarGaleria();
+    
 
-    $.each(imagenes, function(index, url) {
-        $('#galeria').append($('<img>', {
-            'src': url,
-            'alt': 'Publicación ' + (index + 1),
-            'class': 'img-fluid'
-        }));
+    $('#uploadForm').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                alert('Imagen subida correctamente');
+                // Opcional: Recargar la galería o agregar la nueva imagen directamente
+                cargarGaleria();
+            },
+            error: function() {
+                alert('Error al subir la imagen');
+            }
+        });
     });
 });
