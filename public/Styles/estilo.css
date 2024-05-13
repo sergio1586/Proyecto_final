@@ -1,0 +1,90 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Fuente más limpia */
+}
+
+.menu-lateral {
+    background-color: #343a40; /* Un color más moderno y neutral */
+    color: white;
+    padding: 20px;
+    min-height: 100vh; /* Asegura que el menú cubra toda la altura */
+}
+
+.menu-lateral a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+}
+
+.menu-lateral a:hover {
+    background-color: #495057; /* Un ligero cambio de color al hacer hover */
+}
+
+.contenido {
+    padding: 20px;
+    width: 100%;
+}
+
+.perfil-foto {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%; /* Hace la imagen circular */
+    display: block;
+    margin-bottom: 10px;
+}
+
+.galeria {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.galeria img {
+    flex: calc(33.333% - 14px); /* Ajusta para tres columnas, contando el espacio */
+    height: auto; /* Altura fija para mantener las imágenes cuadradas */
+    aspect-ratio: 1/1;
+    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
+}
+
+.img-fluid {
+    max-width: 20%;
+    height: auto;
+}
+.datos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.perfil-foto {
+    border-radius: 50%;
+    height: auto;
+    width: 120px; /* Ajusta según necesario */
+}
+
+/* Asegúrate de que las columnas no tengan padding/margin indeseados */
+.col, .col-auto {
+    padding: 0 15px; /* Bootstrap ya tiene un padding, ajusta si es necesario */
+}
+.stat-line {
+    display: flex;  /* Asegura que los elementos estén en línea */
+    align-items: center; /* Alinea verticalmente los elementos al centro */
+    justify-content: center; /* Alinea horizontalmente los elementos al centro, opcional si prefieres otra alineación */
+    gap: 20px;  /* Espacio entre cada elemento */
+}
+
+.stat-line p {
+    margin: 0; /* Elimina cualquier margen predeterminado */
+    padding: 5px 10px; /* Agrega un poco de padding para un mejor espaciamiento visual */
+    background-color: #f8f9fa; /* Un suave color de fondo, opcional */
+    border-radius: 5px; /* Bordes redondeados para un aspecto más suave, opcional */
+}
+h3.text-center {
+    margin-bottom: 20px; /* Espacio antes de la galería */
+    color: #333; /* Color del texto */
+    font-weight: 600; /* Hacer el texto un poco más grueso */
+}
