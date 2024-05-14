@@ -12,15 +12,24 @@ body, html {
     min-height: 100vh; /* Asegura que el menú cubra toda la altura */
 }
 
-.menu-lateral a {
-    color: white;
-    text-decoration: none;
+.menu-lateral .nav-link {
+    display: flex;
+    align-items: center;
     padding: 10px;
-    display: block;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
 }
 
-.menu-lateral a:hover {
-    background-color: #495057; /* Un ligero cambio de color al hacer hover */
+.menu-lateral .nav-link:hover {
+    background-color: #495057;
+}
+
+.icono-nav {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
 }
 
 .contenido {
