@@ -33,8 +33,8 @@ conectarDB().then(async()=>{
         console.log('Usuario ya existe');
     }
 });
-app.get('/',(req,res)=>{
-    var contenido=fs.readFileSync('public/index.html');
+app.get('/perfil',(req,res)=>{
+    var contenido=fs.readFileSync('public/perfil.html');
     res.setHeader('Content-type','text/html');
     res.send(contenido);
 })
