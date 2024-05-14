@@ -1,14 +1,12 @@
-$(document).ready(function(){
-
+$(document).ready(function() {
     $('#fotoperfil').attr({
         'src': 'images/1.jpeg',
-        'alt': 'Foto de perfil',
-        'class': 'perfil-foto me-3'
+        'alt': 'Foto de perfil'
     });
 
     function cargarGaleria() {
         $.get('/fotos/sergio', function(fotos) {
-            $('#galeria').empty(); // Limpia la galería antes de cargar nuevas fotos
+            $('#galeria').empty();
             fotos.forEach(function(foto) {
                 $('#galeria').append($('<img>', {
                     src: foto.imageUrl,
@@ -21,8 +19,8 @@ $(document).ready(function(){
             $('#galeria').append('<p>Error al cargar las fotos.</p>');
         });
     }
-    cargarGaleria();
     
+    cargarGaleria();
 
     $('#uploadForm').on('submit', function(e) {
         e.preventDefault();
@@ -36,8 +34,8 @@ $(document).ready(function(){
             contentType: false,
             success: function(data) {
                 alert('Imagen subida correctamente');
-                // Opcional: Recargar la galería o agregar la nueva imagen directamente
-                cargarGaleria();
+                $('#uploadModal').modal('hide'); // Ocultar el modal
+                cargarGaleria(); // Recargar la galería
             },
             error: function() {
                 alert('Error al subir la imagen');
