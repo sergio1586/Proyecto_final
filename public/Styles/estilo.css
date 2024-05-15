@@ -97,3 +97,27 @@ h3.text-center {
     color: #333; /* Color del texto */
     font-weight: 600; /* Hacer el texto un poco más grueso */
 }
+/* Estilo para el modal de la imagen grande */
+#imageModal .modal-dialog {
+    max-width: 80%; /* Ajustar el tamaño máximo del modal */
+    width: auto;
+    margin: auto; /* Centrar el modal */
+}
+
+#imageModal .modal-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modalImage {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    max-height: 80vh; /* Ajustar el tamaño máximo de la imagen */
+    display: block;
+    margin: auto;
+}
+
+
+

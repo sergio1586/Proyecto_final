@@ -33,11 +33,18 @@ conectarDB().then(async()=>{
         console.log('Usuario ya existe');
     }
 });
-app.get('/perfil',(req,res)=>{
-    var contenido=fs.readFileSync('public/perfil.html');
-    res.setHeader('Content-type','text/html');
+app.get('/', (req, res) => {
+    var contenido = fs.readFileSync('public/index.html');
+    res.setHeader('Content-type', 'text/html');
     res.send(contenido);
-})
+});
+app.get('/perfil', (req, res) => {
+    const username = req.query.username;
+    var contenido = fs.readFileSync('public/perfil.html', 'utf8');
+    contenido = contenido.replace('@username', username);
+    res.setHeader('Content-type', 'text/html');
+    res.send(contenido);
+});
 app.post('/upload/:username', upload.single('fileToUpload'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send('Archivo no subido');
