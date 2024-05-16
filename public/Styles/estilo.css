@@ -99,15 +99,15 @@ h3.text-center {
 }
 /* Estilo para el modal de la imagen grande */
 #imageModal .modal-dialog {
-    max-width: 80%; /* Ajustar el tamaño máximo del modal */
     width: auto;
+    max-width: 80%; /* Ajustar el tamaño máximo del modal */
     margin: auto; /* Centrar el modal */
 }
 
 #imageModal .modal-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 #modalImage {
@@ -118,6 +118,25 @@ h3.text-center {
     display: block;
     margin: auto;
 }
+
+/* Centrar el botón debajo de la imagen */
+#imageModal .btn {
+    display: block;
+    margin: 20px auto; /* Centrar el botón */
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* Ajustar el tamaño del ícono */
+#imageModal .btn img {
+    width: 30px; /* Ancho del ícono */
+    height: 30px; /* Alto del ícono */
+}
+
+
+
+
 
 
 
