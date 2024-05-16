@@ -88,6 +88,7 @@ app.get('/fotos/:username', async (req, res) => {
         }
 
         const fotos = usuario.photos.map(photo => ({
+            _id: photo._id,
             imageName: photo.imageName,
             imageUrl: `data:image/jpeg;base64,${photo.imageData}`
         }));
@@ -99,59 +100,24 @@ app.get('/fotos/:username', async (req, res) => {
     }
 });
 
-// Ruta para seguir a un usuario
-app.post('/follow', async (req, res) => {
-    const { followerUsername, followingUsername } = req.body;
+app.delete('/borrar-foto/:id', async (req, res) => {
     try {
-        const follower = await User.findOne({ username: followerUsername });
-        const following = await User.findOne({ username: followingUsername });
+        const fotoId = req.params.id;
+        const image = await Image.findByIdAndDelete(fotoId);
 
-        if (!follower || !following) {
-            return res.status(404).send('Usuario no encontrado');
+        if (!image) {
+            return res.status(404).send('Imagen no encontrada');
         }
 
-        // Agregar la referencia de seguimiento
-        if (!follower.following.includes(following._id)) {
-            follower.following.push(following._id);
-            await follower.save();
-        }
-        if (!following.followers.includes(follower._id)) {
-            following.followers.push(follower._id);
-            await following.save();
-        }
+        // Eliminar la referencia de la imagen en todos los usuarios
+        await User.updateMany({ photos: fotoId }, { $pull: { photos: fotoId } });
 
-        res.send('Usuario seguido correctamente!');
+        res.send('Imagen borrada correctamente');
     } catch (err) {
-        console.error('Error siguiendo al usuario:', err);
-        res.status(500).send('Error al seguir al usuario');
+        console.error('Error borrando la imagen:', err);
+        res.status(500).send('Error al borrar la imagen');
     }
 });
-
-// Ruta para dejar de seguir a un usuario
-app.post('/unfollow', async (req, res) => {
-    const { followerUsername, followingUsername } = req.body;
-    try {
-        const follower = await User.findOne({ username: followerUsername });
-        const following = await User.findOne({ username: followingUsername });
-
-        if (!follower || !following) {
-            return res.status(404).send('Usuario no encontrado');
-        }
-
-        // Remover la referencia de seguimiento
-        follower.following = follower.following.filter(followId => !followId.equals(following._id));
-        await follower.save();
-
-        following.followers = following.followers.filter(followId => !followId.equals(follower._id));
-        await following.save();
-
-        res.send('Usuario dejado de seguir correctamente!');
-    } catch (err) {
-        console.error('Error dejando de seguir al usuario:', err);
-        res.status(500).send('Error al dejar de seguir al usuario');
-    }
-});
-
 
 server.listen(port, () => {
     console.log(`App escuchando en el puerto ${port}`);
