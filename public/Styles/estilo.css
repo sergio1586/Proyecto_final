@@ -50,17 +50,23 @@ body, html {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
-    position: relative; 
-}
-
-.galeria img {
-    flex: calc(33.333% - 14px); /* Ajusta para tres columnas, contando el espacio */
-    height: auto; /* Altura fija para mantener las imágenes cuadradas */
-    aspect-ratio: 1/1;
-    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
     position: relative;
 }
-.galeria .delete-btn {
+
+.image-container {
+    position: relative;
+    flex: calc(33.333% - 14px); /* Ajusta para tres columnas, contando el espacio */
+}
+
+.galeria-img {
+    width: 100%; /* Asegura que la imagen ocupe todo el contenedor */
+    height: auto;
+    aspect-ratio: 1/1;
+    object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
+}
+
+/* Estilo para el botón "Eliminar" */
+.image-container .delete-btn {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -70,33 +76,15 @@ body, html {
     padding: 5px;
     display: none;
     cursor: pointer;
-    opacity: 0;
     transition: opacity 0.3s ease;
+    opacity: 0; /* Comienza transparente */
 }
-.galeria img:hover + .delete-btn,
-.galeria .delete-btn:hover {
+
+.image-container:hover .delete-btn {
     display: block;
     opacity: 1;
 }
-.galeria img:hover:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    transition: opacity 0.3s ease;
-    opacity: 0;
-}
-.galeria .delete-btn:hover + img:after {
-    opacity: 1;
-}
-.img-fluid {
-    max-width: 20%;
-    height: auto;
-}
+
 .datos {
     display: flex;
     flex-direction: column;
@@ -113,6 +101,7 @@ body, html {
 .col, .col-auto {
     padding: 0 15px; /* Bootstrap ya tiene un padding, ajusta si es necesario */
 }
+
 .stat-line {
     display: flex;  /* Asegura que los elementos estén en línea */
     align-items: center; /* Alinea verticalmente los elementos al centro */
@@ -126,11 +115,13 @@ body, html {
     background-color: #f8f9fa; /* Un suave color de fondo, opcional */
     border-radius: 5px; /* Bordes redondeados para un aspecto más suave, opcional */
 }
+
 h3.text-center {
     margin-bottom: 20px; /* Espacio antes de la galería */
     color: #333; /* Color del texto */
     font-weight: 600; /* Hacer el texto un poco más grueso */
 }
+
 /* Estilo para el modal de la imagen grande */
 #imageModal .modal-dialog {
     width: auto;
@@ -167,4 +158,3 @@ h3.text-center {
     width: 30px; /* Ancho del ícono */
     height: 30px; /* Alto del ícono */
 }
-
