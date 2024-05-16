@@ -20,9 +20,22 @@ $(document).ready(function() {
                     src: foto.imageUrl,
                     alt: foto.imageName,
                     'class': 'img-fluid',
+                    'data-id': foto._id,
                     'data-bs-toggle': 'modal',
                     'data-bs-target': '#imageModal'
                 });
+
+                const deleteButton = $('<button>', {
+                    'class': 'delete-btn',
+                    'html': '<img src="images/borrar.png" alt="Borrar" style="width:20px; height:20px;">',
+                    'click': function(e) {
+                        e.stopPropagation();
+                        borrarFoto(foto._id);
+                    }
+                });
+
+                $('#galeria').append(imgElement).append(deleteButton);
+
 
                 imgElement.on('click', function() {
                     $('#modalImage').attr('src', foto.imageUrl);
@@ -61,12 +74,24 @@ $(document).ready(function() {
                         $('#imageModal').modal('show');
                     };
                 });
-
-                $('#galeria').append(imgElement);
             });
         }).fail(function() {
             console.error('Error al cargar las fotos');
             $('#galeria').append('<p>Error al cargar las fotos.</p>');
+        });
+    }
+
+    function borrarFoto(fotoId) {
+        $.ajax({
+            url: `/borrar-foto/${fotoId}`,
+            type: 'DELETE',
+            success: function(result) {
+                alert('Imagen borrada correctamente');
+                cargarGaleria(username); // Recargar la galería
+            },
+            error: function() {
+                alert('Error al borrar la imagen');
+            }
         });
     }
 
@@ -83,6 +108,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(data) {
+                alert('Imagen subida correctamente');
                 $('#uploadModal').modal('hide'); // Ocultar el modal
                 cargarGaleria(username); // Recargar la galería
             },
