@@ -50,19 +50,41 @@ body, html {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
+    position: relative;
 }
 
-.galeria img {
+.image-container {
+    position: relative;
     flex: calc(33.333% - 14px); /* Ajusta para tres columnas, contando el espacio */
-    height: auto; /* Altura fija para mantener las imágenes cuadradas */
+}
+
+.galeria-img {
+    width: 100%; /* Asegura que la imagen ocupe todo el contenedor */
+    height: auto;
     aspect-ratio: 1/1;
     object-fit: cover; /* Asegura que la imagen cubra el área sin deformarse */
 }
 
-.img-fluid {
-    max-width: 20%;
-    height: auto;
+/* Estilo para el botón "Eliminar" */
+.image-container .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.7); /* Fondo blanco semi-transparente */
+    border: none;
+    border-radius: 50%;
+    padding: 5px;
+    display: none;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    opacity: 0; /* Comienza transparente */
 }
+
+.image-container:hover .delete-btn {
+    display: block;
+    opacity: 1;
+}
+
 .datos {
     display: flex;
     flex-direction: column;
@@ -79,6 +101,7 @@ body, html {
 .col, .col-auto {
     padding: 0 15px; /* Bootstrap ya tiene un padding, ajusta si es necesario */
 }
+
 .stat-line {
     display: flex;  /* Asegura que los elementos estén en línea */
     align-items: center; /* Alinea verticalmente los elementos al centro */
@@ -92,11 +115,13 @@ body, html {
     background-color: #f8f9fa; /* Un suave color de fondo, opcional */
     border-radius: 5px; /* Bordes redondeados para un aspecto más suave, opcional */
 }
+
 h3.text-center {
     margin-bottom: 20px; /* Espacio antes de la galería */
     color: #333; /* Color del texto */
     font-weight: 600; /* Hacer el texto un poco más grueso */
 }
+
 /* Estilo para el modal de la imagen grande */
 #imageModal .modal-dialog {
     width: auto;
@@ -133,10 +158,3 @@ h3.text-center {
     width: 30px; /* Ancho del ícono */
     height: 30px; /* Alto del ícono */
 }
-
-
-
-
-
-
-
