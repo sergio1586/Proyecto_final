@@ -3,37 +3,20 @@ const mongoose = require("mongoose");
 // URI de conexión a MongoDB
 const mongoDBURI = "mongodb+srv://sergio1586:mtnjlqNeyzOg7mdO@cluster0.s7g0oqn.mongodb.net/myDatabaseName";
 
-// Esquema para imágenes
-const imageSchema = new mongoose.Schema({
-    imageName: { type: String, required: true },
-    imageData: { type: String, required: true }
+const usuarioSchema = new mongoose.Schema({
+    nombre: String,
+    apellidos: String,
+    username: String,
+    fechaNacimiento: Date,
+    password: String,
+    seguidores: String,
+    seguidos: String,
+    etiquetas: { type: Object, default: {} }, // Etiquetas como arreglo de cadenas
+    imagenPerfil: String,
+    publicaciones: [String]
 });
-const Image = mongoose.model('Image', imageSchema);
-
-// Esquema para el usuario
-const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    photos: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'Image'
-    }],
-    followers: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'User'
-    }],
-    following: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'User'
-    }]
-});
-
 // Modelo basado en el esquema
-const User = mongoose.model('User', userSchema);
+const Usuario = mongoose.model('Usuario', usuarioSchema);
 
 // Función para conectar a MongoDB
 const conectarDB = async () => {
@@ -47,4 +30,4 @@ const conectarDB = async () => {
 };
 
 // Exportar el modelo y la función de conexión
-module.exports = { conectarDB, User, Image };
+module.exports = { Usuario, conectarDB };
