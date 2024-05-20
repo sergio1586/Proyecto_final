@@ -17,7 +17,7 @@ promise.always(function(data){
     if(data.res=="login true"){//Si la respuesta del servidor es login true, redirijo al usuario a /rutaSegura
         document.cookie = "usuario=" + data.res.user;
         document.cookie = "contraseña=" + data.res.password;
-        window.location.replace("/home");
+        window.location.replace("/feed");//vamos al muro lo primero de todo
        
     }else if(data.res=="usuario no válido"){//Si la respuesta del servidor es "usuario no válido", significa que este usuario no es el correcto.
         alert("No estás autorizado");

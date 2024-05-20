@@ -1,0 +1,89 @@
+/* feed.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-lateral {
+    background-color: #343a40; /* Un color más moderno y neutral */
+    color: white;
+    padding: 20px;
+    min-height: 100vh; /* Asegura que el menú cubra toda la altura */
+}
+
+.menu-lateral .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+}
+
+.menu-lateral .nav-link:hover {
+    background-color: #495057;
+}
+
+.icono-nav {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.contenido {
+    margin-left: 80px;
+    padding: 20px;
+    width: calc(100% - 80px);
+}
+
+.galeria {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-container {
+    position: relative;
+    display: block;
+    margin: 10px 0;
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+}
+
+.user-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.modal-body {
+    padding: 0;
+}
+
+.modal-body img {
+    width: 100%;
+    height: auto;
+}
+
+.btn-secondary img {
+    width: 20px;
+    height: 20px;
+}

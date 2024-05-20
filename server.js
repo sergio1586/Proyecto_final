@@ -62,6 +62,12 @@ app.get("/registro", (req,response)=> {
     response.setHeader("Content-type", "text/html");
     response.send(contenido);
 });
+// Ruta para servir la página del muro
+app.get('/feed', auth, (req, res) => {
+    var contenido = fs.readFileSync('public/feed.html', 'utf8');
+    res.setHeader('Content-type', 'text/html');
+    res.send(contenido);
+});
 
 app.get('/home', auth, (req, res) => {
     const username = req.session.user; // Obtiene el nombre de usuario de la sesión
@@ -95,7 +101,29 @@ app.get('/imagenes-usuario', async (req, res) => {
         res.status(500).json({ error: 'Error del servidor' });
     }
 });
+app.get('/cargarFeed', auth, async (req, res) => {
+    try {
+        const usuarios = await Usuario.find({}, 'publicaciones username').exec();
+        let publicaciones = [];
 
+        usuarios.forEach(usuario => {
+            usuario.publicaciones.forEach(publicacion => {
+                const rutaRelativa = publicacion.replace(/^public[\\/]/, '');
+                const imagePath = `images/${usuario.username}/${path.basename(publicacion)}`;
+                console.log('Ruta de la imagen:', imagePath);
+                publicaciones.push({ 
+                    username: usuario.username, 
+                    imagePath: imagePath 
+                });
+            });
+        });
+
+        res.json({ publicaciones });
+    } catch (error) {
+        console.error('Error al obtener el feed:', error);
+        res.status(500).json({ error: 'Error del servidor' });
+    }
+});
 
 //FUNCIONES POST
 
@@ -193,89 +221,3 @@ conectarDB();
 server.listen(port, () => {
     console.log(`App escuchando en el puerto ${port}`);
 });
-/*
-conectarDB().then(async () => {
-    const usuarioExistente = await User.findOne({ username: 'sergio' });
-    if (!usuarioExistente) {
-        const newUser = new User({
-            username: 'sergio',
-            password: '12345',
-            photos: [],
-            followers: [],
-            following: []
-        });
-        await newUser.save();
-        console.log('Usuario sergio creado');
-    } else {
-        console.log('Usuario ya existe');
-    }
-});*/
-/*
-app.post('/upload/:username', upload.single('fileToUpload'), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('Archivo no subido');
-    }
-
-    try {
-        const imgBase64 = req.file.buffer.toString('base64');
-        const newImage = new Image({
-            imageName: req.file.originalname,
-            imageData: imgBase64
-        });
-        const savedImage = await newImage.save();
-        const updatedUser = await User.findOneAndUpdate(
-            { username: req.params.username },
-            { $push: { photos: savedImage._id } },
-            { new: true }
-        );
-
-        if (!updatedUser) {
-            return res.status(404).send('Usuario no encontrado');
-        }
-
-        res.send('Imagen cargada correctamente y asociada al usuario!');
-    } catch (err) {
-        console.error('Error subiendo la imagen:', err);
-        res.status(500).send('Error al cargar la imagen');
-    }
-});
-
-app.get('/fotos/:username', async (req, res) => {
-    try {
-        const usuario = await User.findOne({ username: req.params.username }).populate('photos');
-
-        if (!usuario) {
-            return res.status(404).send('Usuario no encontrado');
-        }
-
-        const fotos = usuario.photos.map(photo => ({
-            _id: photo._id,
-            imageName: photo.imageName,
-            imageUrl: `data:image/jpeg;base64,${photo.imageData}`
-        }));
-
-        res.json(fotos);
-    } catch (err) {
-        console.error('Error obteniendo las fotos del usuario:', err);
-        res.status(500).send('Error interno del servidor');
-    }
-});
-
-app.delete('/borrar-foto/:id', async (req, res) => {
-    try {
-        const fotoId = req.params.id;
-        const image = await Image.findByIdAndDelete(fotoId);
-
-        if (!image) {
-            return res.status(404).send('Imagen no encontrada');
-        }
-
-        // Eliminar la referencia de la imagen en todos los usuarios
-        await User.updateMany({ photos: fotoId }, { $pull: { photos: fotoId } });
-
-        res.send('Imagen borrada correctamente');
-    } catch (err) {
-        console.error('Error borrando la imagen:', err);
-        res.status(500).send('Error al borrar la imagen');
-    }
-});*/
