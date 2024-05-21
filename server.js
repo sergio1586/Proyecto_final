@@ -278,9 +278,14 @@ app.post('/dejar-de-seguir', auth, async (req, res) => {
 app.post('/comentario', auth, async (req, res) => {
     try {
         const { publicacionId, texto } = req.body;
-        const usuarioId = req.session.userId;
 
-        const usuario = await Usuario.findById(usuarioId);
+        // Buscar la publicación en todos los usuarios
+        const usuario = await Usuario.findOne({ 'publicaciones._id': publicacionId });
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
         const publicacion = usuario.publicaciones.id(publicacionId);
 
         if (!publicacion) {
@@ -288,7 +293,7 @@ app.post('/comentario', auth, async (req, res) => {
         }
 
         publicacion.comentarios.push({
-            usuario: usuario.username,
+            usuario: req.session.user,
             texto: texto,
             fecha: new Date()
         });
@@ -306,9 +311,14 @@ app.post('/comentario', auth, async (req, res) => {
 app.post('/me-gusta', auth, async (req, res) => {
     try {
         const { publicacionId } = req.body;
-        const usuarioId = req.session.userId;
 
-        const usuario = await Usuario.findById(usuarioId);
+        // Buscar la publicación en todos los usuarios
+        const usuario = await Usuario.findOne({ 'publicaciones._id': publicacionId });
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
         const publicacion = usuario.publicaciones.id(publicacionId);
 
         if (!publicacion) {
@@ -325,7 +335,6 @@ app.post('/me-gusta', auth, async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 });
-
 
 app.delete('/delete-photo/:photoId', auth, async (req, res) => {
     try {
