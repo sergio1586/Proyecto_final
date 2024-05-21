@@ -102,9 +102,12 @@ app.get('/cargarFeed', auth, async (req, res) => {
         usuarios.forEach(usuario => {
             usuario.publicaciones.forEach(publicacion => {
                 const imagePath = publicacion.imagePath.replace(/^public[\\/]/, '');
-                publicaciones.push({ 
-                    username: usuario.username, 
-                    imagePath: imagePath 
+                publicaciones.push({
+                    _id: publicacion._id,
+                    username: usuario.username,
+                    imagePath: imagePath,
+                    meGustas: publicacion.meGustas,
+                    comentarios: publicacion.comentarios
                 });
             });
         });
@@ -113,6 +116,31 @@ app.get('/cargarFeed', auth, async (req, res) => {
     } catch (error) {
         console.error('Error al obtener el feed:', error);
         res.status(500).json({ error: 'Error del servidor' });
+    }
+});
+
+// Ruta para obtener la información del perfil del usuario
+app.get('/perfil', auth, async (req, res) => {
+    try {
+        const usuarioId = req.session.userId;
+        const usuario = await Usuario.findById(usuarioId);
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({
+            nombre: usuario.nombre,
+            apellidos: usuario.apellidos,
+            username: usuario.username,
+            seguidores: usuario.seguidores.length,
+            seguidos: usuario.seguidos.length,
+            publicaciones: usuario.publicaciones.length,
+            imagenPerfil: usuario.imagenPerfil
+        });
+    } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
+        res.status(500).json({ message: 'Error del servidor' });
     }
 });
 
@@ -181,6 +209,123 @@ app.post('/upload', auth, upload.single('imagen'), async (req, res) => {
         res.status(500).json({ message: 'Error al subir la imagen' });
     }
 });
+// Ruta para seguir a un usuario
+app.post('/seguir', auth, async (req, res) => {
+    try {
+        const usuarioId = req.session.userId;
+        const seguirUsername = req.body.username; // Nombre de usuario a seguir
+
+        const usuario = await Usuario.findById(usuarioId);
+        const usuarioASeguir = await Usuario.findOne({ username: seguirUsername });
+
+        if (!usuarioASeguir) {
+            return res.status(404).json({ message: 'Usuario a seguir no encontrado' });
+        }
+
+        // Verificar si ya sigue al usuario
+        if (usuario.seguidos.includes(usuarioASeguir.username)) {
+            return res.status(400).json({ message: 'Ya sigues a este usuario' });
+        }
+
+        // Añadir el usuario a la lista de seguidos
+        usuario.seguidos.push(usuarioASeguir.username);
+        // Añadir este usuario a la lista de seguidores del usuario a seguir
+        usuarioASeguir.seguidores.push(usuario.username);
+
+        await usuario.save();
+        await usuarioASeguir.save();
+
+        res.status(200).json({ message: 'Usuario seguido correctamente' });
+    } catch (error) {
+        console.error('Error al seguir al usuario:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+});
+
+// Ruta para dejar de seguir a un usuario
+app.post('/dejar-de-seguir', auth, async (req, res) => {
+    try {
+        const usuarioId = req.session.userId;
+        const dejarDeSeguirUsername = req.body.username; // Nombre de usuario a dejar de seguir
+
+        const usuario = await Usuario.findById(usuarioId);
+        const usuarioADejarDeSeguir = await Usuario.findOne({ username: dejarDeSeguirUsername });
+
+        if (!usuarioADejarDeSeguir) {
+            return res.status(404).json({ message: 'Usuario a dejar de seguir no encontrado' });
+        }
+
+        // Verificar si no sigue al usuario
+        if (!usuario.seguidos.includes(usuarioADejarDeSeguir.username)) {
+            return res.status(400).json({ message: 'No sigues a este usuario' });
+        }
+
+        // Eliminar el usuario de la lista de seguidos
+        usuario.seguidos = usuario.seguidos.filter(username => username !== usuarioADejarDeSeguir.username);
+        // Eliminar este usuario de la lista de seguidores del usuario a dejar de seguir
+        usuarioADejarDeSeguir.seguidores = usuarioADejarDeSeguir.seguidores.filter(username => username !== usuario.username);
+
+        await usuario.save();
+        await usuarioADejarDeSeguir.save();
+
+        res.status(200).json({ message: 'Usuario dejado de seguir correctamente' });
+    } catch (error) {
+        console.error('Error al dejar de seguir al usuario:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+});
+// Ruta para añadir un comentario a una publicación
+app.post('/comentario', auth, async (req, res) => {
+    try {
+        const { publicacionId, texto } = req.body;
+        const usuarioId = req.session.userId;
+
+        const usuario = await Usuario.findById(usuarioId);
+        const publicacion = usuario.publicaciones.id(publicacionId);
+
+        if (!publicacion) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
+        publicacion.comentarios.push({
+            usuario: usuario.username,
+            texto: texto,
+            fecha: new Date()
+        });
+
+        await usuario.save();
+
+        res.status(200).json({ message: 'Comentario añadido correctamente' });
+    } catch (error) {
+        console.error('Error al añadir comentario:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+});
+
+// Ruta para añadir un "me gusta" a una publicación
+app.post('/me-gusta', auth, async (req, res) => {
+    try {
+        const { publicacionId } = req.body;
+        const usuarioId = req.session.userId;
+
+        const usuario = await Usuario.findById(usuarioId);
+        const publicacion = usuario.publicaciones.id(publicacionId);
+
+        if (!publicacion) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
+        publicacion.meGustas += 1;
+
+        await usuario.save();
+
+        res.status(200).json({ message: 'Me gusta añadido correctamente' });
+    } catch (error) {
+        console.error('Error al añadir "me gusta":', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+});
+
 
 app.delete('/delete-photo/:photoId', auth, async (req, res) => {
     try {

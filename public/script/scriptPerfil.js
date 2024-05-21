@@ -1,11 +1,36 @@
-// public/js/home.js
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof currentUser !== 'undefined') {
         const nick_usuario = document.getElementById('nick_usuario');
         nick_usuario.innerHTML = `${currentUser}`;
+        cargarPerfil(); // Cargar datos del perfil del usuario
         cargarImagenesUsuario();
     }
 });
+
+function cargarPerfil() {
+    $.ajax({
+        type: 'GET',
+        url: '/perfil',
+        success: function (response) {
+            if (response) {
+                $('#nick_usuario').text(response.username);
+                $('#publicaciones').text(`${response.publicaciones} publicaciones`);
+                $('#seguidores').text(`${response.seguidores} seguidores`);
+                $('#seguidos').text(`${response.seguidos} seguidos`);
+                if (response.imagenPerfil) {
+                    $('#fotoperfil').attr('src', response.imagenPerfil);
+                } else {
+                    $('#fotoperfil').attr('src', 'images/default-profile.png'); // Imagen de perfil predeterminada
+                }
+            } else {
+                console.error('Error al cargar el perfil del usuario.');
+            }
+        },
+        error: function (error) {
+            console.error('Error al cargar el perfil del usuario:', error);
+        }
+    });
+}
 
 function subirImagen() {
     const fileInput = document.getElementById('inputImagen');
@@ -26,6 +51,7 @@ function subirImagen() {
             // Cerrar el modal después de la subida exitosa
             $('#uploadModal').modal('hide'); 
             cargarImagenesUsuario();
+            cargarPerfil(); // Actualizar datos del perfil después de subir la imagen
         },
         error: function (error) {
             console.error('Error al subir la imagen:', error);
@@ -40,6 +66,7 @@ function eliminarFoto(photoId) {
         success: function(response) {
             console.log(response.message);
             cargarImagenesUsuario();
+            cargarPerfil(); // Actualizar datos del perfil después de eliminar la imagen
         },
         error: function(error) {
             console.error('Error al eliminar la foto:', error);
@@ -106,6 +133,46 @@ function cargarImagenesUsuario() {
         },
         error: function (error) {
             console.error('Error al cargar las imágenes del usuario:', error);
+        }
+    });
+}
+
+function seguirUsuario(username) {
+    $.ajax({
+        type: 'POST',
+        url: '/seguir',
+        data: JSON.stringify({ username: username }),
+        contentType: 'application/json',
+        success: function(response) {
+            alert(response.message);
+            cargarPerfil(); // Actualizar datos del perfil después de seguir a un usuario
+        },
+        error: function(error) {
+            if (error.responseJSON && error.responseJSON.message) {
+                alert(error.responseJSON.message);
+            } else {
+                console.error('Error al seguir al usuario:', error);
+            }
+        }
+    });
+}
+
+function dejarDeSeguirUsuario(username) {
+    $.ajax({
+        type: 'POST',
+        url: '/dejar-de-seguir',
+        data: JSON.stringify({ username: username }),
+        contentType: 'application/json',
+        success: function(response) {
+            alert(response.message);
+            cargarPerfil(); // Actualizar datos del perfil después de dejar de seguir a un usuario
+        },
+        error: function(error) {
+            if (error.responseJSON && error.responseJSON.message) {
+                alert(error.responseJSON.message);
+            } else {
+                console.error('Error al dejar de seguir al usuario:', error);
+            }
         }
     });
 }
