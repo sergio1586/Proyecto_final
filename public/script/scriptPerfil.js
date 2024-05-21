@@ -1,20 +1,16 @@
 // public/js/home.js
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof currentUser !== 'undefined') {
-  // ${currentUser}`;
-  
-  const nick_usuario = document.getElementById('nick_usuario');
-  nick_usuario.innerHTML = `${currentUser}`;
-  cargarImagenesUsuario();
+        const nick_usuario = document.getElementById('nick_usuario');
+        nick_usuario.innerHTML = `${currentUser}`;
+        cargarImagenesUsuario();
     }
 });
+
 function subirImagen() {
     const fileInput = document.getElementById('inputImagen');
     const formData = new FormData();
     formData.append('imagen', fileInput.files[0]);
-
-   
-    formData.append('usuarioId', `${currentUser}`); 
 
     $.ajax({
         type: 'POST',
@@ -33,10 +29,10 @@ function subirImagen() {
         },
         error: function (error) {
             console.error('Error al subir la imagen:', error);
-            
         }
     });
 }
+
 function eliminarFoto(photoId) {
     $.ajax({
         type: "DELETE",
@@ -47,10 +43,10 @@ function eliminarFoto(photoId) {
         },
         error: function(error) {
             console.error('Error al eliminar la foto:', error);
-            
         }
     });
 }
+
 function cargarImagenesUsuario() {
     $.ajax({
         type: 'GET',
@@ -59,7 +55,7 @@ function cargarImagenesUsuario() {
             if (response && response.imagenes && response.imagenes.length > 0) {
                 var galeria = $('#galeria'); // Selecciona el contenedor con jQuery
                 galeria.empty(); // Limpia el contenido existente
-            
+
                 $.each(response.imagenes, function(index, ruta) {
                     const imgContainer = $('<div>', {
                         'class': 'image-container', // Añade clase para estilo
@@ -103,7 +99,7 @@ function cargarImagenesUsuario() {
                     galeria.append(imgContainer); // Añade el elemento imagen al contenedor
                     console.log(imgElement); // Muestra en consola el elemento imagen creado
                 });
-                
+
             } else {
                 console.log('El usuario no tiene imágenes.');
             }

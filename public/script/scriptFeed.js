@@ -21,6 +21,7 @@ function cargarFeed() {
                         'class': 'feed-img', // Añade la clase para estilos
                         'click': function() { // Manejador de clic para abrir el modal
                             $('#modalImage').attr('src', `/${publicacion.imagePath}`);
+                            $('#imageModal').modal('show'); // Muestra el modal
                         }
                     });
                     var userLabel = $('<div>', {
@@ -38,5 +39,4 @@ function cargarFeed() {
             console.error('Error al cargar el feed:', error);
         }
     });
-    
 }
