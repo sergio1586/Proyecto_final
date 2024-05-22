@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const nick_usuario = document.getElementById('nick_usuario');
         nick_usuario.innerHTML = `${currentUser}`;
         cargarPerfil(); // Cargar datos del perfil del usuario
-        cargarImagenesUsuario();
+        cargarPublicacionesUsuario(); // Cargar publicaciones del usuario
     }
 });
 
@@ -32,6 +32,96 @@ function cargarPerfil() {
     });
 }
 
+function cargarPublicacionesUsuario() {
+    $.ajax({
+        type: 'GET',
+        url: '/publicaciones-usuario',
+        success: function (response) {
+            if (response && response.publicaciones && response.publicaciones.length > 0) {
+                var galeria = $('#galeria'); // Selecciona el contenedor con jQuery
+                galeria.empty(); // Limpia el contenido existente
+
+                $.each(response.publicaciones, function(index, publicacion) {
+                    const imgContainer = $('<div>', {
+                        'class': 'image-container',
+                        'style': 'position: relative; display: inline-block; margin: 10px;'
+                    });
+
+                    var imgElement = $('<img>', {
+                        src: `/${publicacion.imagePath}`,
+                        'class': 'galeria-img',
+                        'click': function() {
+                            $('#modalImage').attr('src', `/${publicacion.imagePath}`);
+                            $('#imageModal').modal('show');
+                        }
+                    });
+
+                    var likesLabel = $('<div>', {
+                        'class': 'likes-label',
+                        'text': `${publicacion.meGustas} Me gusta`
+                    });
+
+                    var likeButton = $('<button>', {
+                        'class': 'like-button',
+                        'text': 'Me gusta',
+                        'click': function() {
+                            addLike(publicacion._id);
+                        }
+                    });
+
+                    var commentButton = $('<button>', {
+                        'class': 'comment-button',
+                        'text': 'Comentar',
+                        'click': function() {
+                            var comentarioTexto = prompt('Introduce tu comentario:');
+                            if (comentarioTexto) {
+                                addComment(publicacion._id, comentarioTexto);
+                            }
+                        }
+                    });
+
+                    var commentsContainer = $('<div>', {
+                        'class': 'comments-container'
+                    });
+
+                    $.each(publicacion.comentarios, function(index, comentario) {
+                        var commentElement = $('<div>', {
+                            'class': 'comment',
+                            'text': `@${comentario.usuario}: ${comentario.texto}`
+                        });
+                        commentsContainer.append(commentElement);
+                    });
+
+                    var deleteButton = $('<button>', {
+                        'class': 'delete-button',
+                        'text': 'Eliminar',
+                        'click': function() {
+                            if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
+                                deletePhoto(publicacion._id);
+                            }
+                        }
+                    });
+
+                    imgContainer.append(imgElement)
+                        .append(likesLabel)
+                        .append(likeButton)
+                        .append(commentButton)
+                        .append(deleteButton)
+                        .append(commentsContainer);
+
+                    galeria.append(imgContainer);
+                });
+
+            } else {
+                console.log('El usuario no tiene imágenes.');
+            }
+        },
+        error: function (error) {
+            console.error('Error al cargar las imágenes del usuario:', error);
+        }
+    });
+}
+
 function subirImagen() {
     const fileInput = document.getElementById('inputImagen');
     const formData = new FormData();
@@ -50,7 +140,7 @@ function subirImagen() {
 
             // Cerrar el modal después de la subida exitosa
             $('#uploadModal').modal('hide'); 
-            cargarImagenesUsuario();
+            cargarPublicacionesUsuario();
             cargarPerfil(); // Actualizar datos del perfil después de subir la imagen
         },
         error: function (error) {
@@ -65,7 +155,7 @@ function eliminarFoto(photoId) {
         url: `/delete-photo/${photoId}`,
         success: function(response) {
             console.log(response.message);
-            cargarImagenesUsuario();
+            cargarPublicacionesUsuario();
             cargarPerfil(); // Actualizar datos del perfil después de eliminar la imagen
         },
         error: function(error) {
@@ -74,65 +164,34 @@ function eliminarFoto(photoId) {
     });
 }
 
-function cargarImagenesUsuario() {
+function addLike(publicacionId) {
     $.ajax({
-        type: 'GET',
-        url: '/imagenes-usuario', 
-        success: function (response) {
-            if (response && response.imagenes && response.imagenes.length > 0) {
-                var galeria = $('#galeria'); // Selecciona el contenedor con jQuery
-                galeria.empty(); // Limpia el contenido existente
-
-                $.each(response.imagenes, function(index, ruta) {
-                    const imgContainer = $('<div>', {
-                        'class': 'image-container', // Añade clase para estilo
-                        'style': 'position: relative; display: inline-block;'
-                    });
-                    var imgElement = $('<img>', { // Crea un elemento imagen con jQuery
-                        src: ruta, // Establece el atributo src
-                        'class': 'galeria-img', // Añade la clase para estilos
-                        'click': function() { // Manejador de clic para abrir el modal
-                            $('#modalImage').attr('src', ruta);
-                            var modalDialog = $('#imageModal .modal-dialog');
-                            var img = new Image();
-                            img.src = ruta;
-                            img.onload = function() {
-                                var imgWidth = img.width;
-                                var imgHeight = img.height;
-                                var viewportWidth = $(window).width();
-                                var viewportHeight = $(window).height();
-                                var maxWidth = Math.min(imgWidth, viewportWidth * 0.8);
-                                var maxHeight = Math.min(imgHeight, viewportHeight * 0.8);
-                                if (imgHeight > imgWidth) {
-                                    modalDialog.css({
-                                        'width': 'auto',
-                                        'max-width': maxWidth + 'px',
-                                        'height': 'auto',
-                                        'max-height': maxHeight + 'px',
-                                        'margin': 'auto'
-                                    });
-                                } else {
-                                    modalDialog.css({
-                                        'width': maxWidth + 'px',
-                                        'height': maxHeight + 'px',
-                                        'margin': 'auto'
-                                    });
-                                }
-                                $('#imageModal').modal('show'); // Muestra el modal
-                            };
-                        }
-                    });
-                    imgContainer.append(imgElement);
-                    galeria.append(imgContainer); // Añade el elemento imagen al contenedor
-                    console.log(imgElement); // Muestra en consola el elemento imagen creado
-                });
-
-            } else {
-                console.log('El usuario no tiene imágenes.');
-            }
+        type: 'POST',
+        url: '/me-gusta',
+        data: JSON.stringify({ publicacionId: publicacionId }),
+        contentType: 'application/json',
+        success: function(response) {
+            alert(response.message);
+            cargarPublicacionesUsuario(); // Recargar las publicaciones para actualizar el número de "me gusta"
         },
-        error: function (error) {
-            console.error('Error al cargar las imágenes del usuario:', error);
+        error: function(error) {
+            console.error('Error al añadir "me gusta":', error);
+        }
+    });
+}
+
+function addComment(publicacionId, texto) {
+    $.ajax({
+        type: 'POST',
+        url: '/comentario',
+        data: JSON.stringify({ publicacionId: publicacionId, texto: texto }),
+        contentType: 'application/json',
+        success: function(response) {
+            alert(response.message);
+            cargarPublicacionesUsuario(); // Recargar las publicaciones para mostrar el nuevo comentario
+        },
+        error: function(error) {
+            console.error('Error al añadir comentario:', error);
         }
     });
 }

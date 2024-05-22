@@ -77,8 +77,8 @@ app.get('/home', auth, (req, res) => {
         res.sendStatus(401);
     }
 });
-
-app.get('/imagenes-usuario', auth, async (req, res) => {
+//NO SE USA
+/*app.get('/imagenes-usuario', auth, async (req, res) => {
     try {
         const username = req.session.user;
         const usuario = await Usuario.findOne({ username });
@@ -92,7 +92,7 @@ app.get('/imagenes-usuario', auth, async (req, res) => {
         console.error('Error al obtener las imágenes del usuario:', error);
         res.status(500).json({ error: 'Error del servidor' });
     }
-});
+});*/
 
 app.get('/cargarFeed', auth, async (req, res) => {
     try {
@@ -118,6 +118,27 @@ app.get('/cargarFeed', auth, async (req, res) => {
         res.status(500).json({ error: 'Error del servidor' });
     }
 });
+app.get('/publicaciones-usuario', auth, async (req, res) => {
+    try {
+        const username = req.session.user;
+        const usuario = await Usuario.findOne({ username });
+        if (usuario) {
+            const publicaciones = usuario.publicaciones.map(publicacion => ({
+                _id: publicacion._id,
+                imagePath: publicacion.imagePath.replace('public\\', ''),
+                meGustas: publicacion.meGustas,
+                comentarios: publicacion.comentarios
+            }));
+            res.json({ publicaciones });
+        } else {
+            res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener las publicaciones del usuario:', error);
+        res.status(500).json({ error: 'Error del servidor' });
+    }
+});
+
 
 // Ruta para obtener la información del perfil del usuario
 app.get('/perfil', auth, async (req, res) => {
