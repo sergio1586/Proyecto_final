@@ -143,6 +143,10 @@ app.get('/perfil', auth, async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 });
+app.get('/currentUser', auth, (req, res) => {
+    const username = req.session.user;
+    res.json({ username });
+});
 
 //FUNCIONES POST
 
@@ -340,24 +344,30 @@ app.delete('/delete-photo/:photoId', auth, async (req, res) => {
     try {
         const usuarioId = req.session.userId;
         const photoId = req.params.photoId;
-        
-        const usuario = await Usuario.findById(usuarioId);
-        const publicacion = usuario.publicaciones.id(photoId);
-        
-        if (publicacion) {
-            const photoPath = publicacion.imagePath;
-            
-            usuario.publicaciones.id(photoId).remove();
-            await usuario.save();
-            
-            if (fs.existsSync(photoPath)) {
-                fs.unlinkSync(photoPath);
-            }
-            
-            res.status(200).json({ message: 'Foto eliminada correctamente' });
-        } else {
-            res.status(404).json({ message: 'Foto no encontrada' });
+
+        // Buscar la publicación en todos los usuarios
+        const usuario = await Usuario.findOne({ 'publicaciones._id': photoId });
+        if (!usuario) {
+            return res.status(404).json({ message: 'Foto no encontrada' });
         }
+
+        const publicacion = usuario.publicaciones.id(photoId);
+        if (!publicacion) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
+        const photoPath = publicacion.imagePath;
+
+        // Eliminar la publicación del array de publicaciones
+        usuario.publicaciones.pull({ _id: photoId });
+        await usuario.save();
+
+        // Eliminar el archivo físicamente
+        if (fs.existsSync(photoPath)) {
+            fs.unlinkSync(photoPath);
+        }
+
+        res.status(200).json({ message: 'Foto eliminada correctamente' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error al eliminar la foto' });

@@ -55,7 +55,6 @@ function cargarFeed() {
                         }
                     });
 
-                    // Botón para seguir al usuario
                     var followButton = $('<button>', {
                         'class': 'follow-button',
                         'text': 'Seguir',
@@ -64,12 +63,22 @@ function cargarFeed() {
                         }
                     });
 
-                    // Botón para dejar de seguir al usuario
                     var unfollowButton = $('<button>', {
                         'class': 'unfollow-button',
                         'text': 'Dejar de Seguir',
                         'click': function() {
                             dejarDeSeguirUsuario(publicacion.username);
+                        }
+                    });
+
+                    // Botón para eliminar la publicación
+                    var deleteButton = $('<button>', {
+                        'class': 'delete-button',
+                        'text': 'Eliminar',
+                        'click': function() {
+                            if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
+                                deletePhoto(publicacion._id);
+                            }
                         }
                     });
 
@@ -92,6 +101,7 @@ function cargarFeed() {
                         .append(commentButton)
                         .append(followButton)
                         .append(unfollowButton)
+                        .append(deleteButton) // Añadir el botón de eliminar
                         .append(commentsContainer);
 
                     feed.append(imgContainer);
@@ -174,6 +184,20 @@ function dejarDeSeguirUsuario(username) {
             } else {
                 console.error('Error al dejar de seguir al usuario:', error);
             }
+        }
+    });
+}
+
+function deletePhoto(photoId) {
+    $.ajax({
+        type: 'DELETE',
+        url: `/delete-photo/${photoId}`,
+        success: function(response) {
+            alert(response.message);
+            cargarFeed(); // Recargar el feed para actualizar las publicaciones
+        },
+        error: function(error) {
+            console.error('Error al eliminar la foto:', error);
         }
     });
 }
