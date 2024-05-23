@@ -23,7 +23,7 @@ function cargarPerfil() {
                 $('#seguidores').text(`${response.seguidores} seguidores`);
                 $('#seguidos').text(`${response.seguidos} seguidos`);
                 if (response.imagenPerfil) {
-                    $('#fotoperfil').attr('src', response.imagenPerfil);
+                    $('#fotoperfil').attr('src', `/${response.imagenPerfil}`);
                 } else {
                     $('#fotoperfil').attr('src', 'images/default-profile.png'); // Imagen de perfil predeterminada
                 }
@@ -48,7 +48,7 @@ function cargarPerfilUsuario(username) {
                 $('#seguidores').text(`${response.seguidores} seguidores`);
                 $('#seguidos').text(`${response.seguidos} seguidos`);
                 if (response.imagenPerfil) {
-                    $('#fotoperfil').attr('src', response.imagenPerfil);
+                    $('#fotoperfil').attr('src', `/${response.imagenPerfil}`);
                 } else {
                     $('#fotoperfil').attr('src', 'images/default-profile.png'); // Imagen de perfil predeterminada
                 }

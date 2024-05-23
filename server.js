@@ -168,7 +168,7 @@ app.get('/perfil', auth, async (req, res) => {
             seguidores: usuario.seguidores.length,
             seguidos: usuario.seguidos.length,
             publicaciones: usuario.publicaciones.length,
-            imagenPerfil: usuario.imagenPerfil,
+            imagenPerfil: usuario.imagenPerfil ? usuario.imagenPerfil.replace('public\\', '') : 'images/default-profile.png', // Ruta correcta para la imagen
             etiquetas: usuario.etiquetas
         });
     } catch (error) {
