@@ -76,7 +76,13 @@ app.get('/home', auth, (req, res) => {
     } else {
         res.sendStatus(401);
     }
+});app.get('/perfil/:username', auth, async (req, res) => {
+    var contenido = fs.readFileSync('public/perfil.html', 'utf8');
+    contenido = contenido.replace('</body>', `<script>var profileUser = "${req.params.username}";</script></body>`);
+    res.setHeader('Content-type', 'text/html');
+    res.send(contenido);
 });
+
 //NO SE USA
 /*app.get('/imagenes-usuario', auth, async (req, res) => {
     try {
@@ -167,6 +173,51 @@ app.get('/perfil', auth, async (req, res) => {
 app.get('/currentUser', auth, (req, res) => {
     const username = req.session.user;
     res.json({ username });
+});
+// Ruta para servir la página de perfil del usuario
+app.get('/perfil/:username', auth, async (req, res) => {
+    var contenido = fs.readFileSync('public/perfil.html', 'utf8');
+    contenido = contenido.replace('</body>', `<script>var profileUser = "${req.params.username}";</script></body>`);
+    res.setHeader('Content-type', 'text/html');
+    res.send(contenido);
+});
+
+// Ruta para obtener los datos del perfil de un usuario específico
+app.get('/perfil-data/:username', auth, async (req, res) => {
+    const username = req.params.username;
+    const usuario = await Usuario.findOne({ username });
+
+    if (usuario) {
+        res.status(200).json({
+            nombre: usuario.nombre,
+            apellidos: usuario.apellidos,
+            username: usuario.username,
+            seguidores: usuario.seguidores.length,
+            seguidos: usuario.seguidos.length,
+            publicaciones: usuario.publicaciones.length,
+            imagenPerfil: usuario.imagenPerfil
+        });
+    } else {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+});
+
+// Ruta para obtener las publicaciones de un usuario específico
+app.get('/publicaciones-de-usuario/:username', auth, async (req, res) => {
+    const username = req.params.username;
+    const usuario = await Usuario.findOne({ username }, 'publicaciones');
+
+    if (usuario) {
+        const publicaciones = usuario.publicaciones.map(publicacion => ({
+            _id: publicacion._id,
+            imagePath: publicacion.imagePath.replace('public\\', ''),
+            meGustas: publicacion.meGustas,
+            comentarios: publicacion.comentarios
+        }));
+        res.status(200).json({ publicaciones });
+    } else {
+        res.status(404).json({ message: 'Usuario no encontrado' });
+    }
 });
 
 //FUNCIONES POST

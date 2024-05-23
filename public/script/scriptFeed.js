@@ -26,10 +26,13 @@ function cargarFeed() {
                         }
                     });
 
-                    var userLabel = $('<div>', {
+                    var userLabel = $('<a>', {
+                        'href': `/perfil/${publicacion.username}`,
                         'class': 'user-label',
-                        'text': `@${publicacion.username}`
+                        'text': `@${publicacion.username}`,
+                        'style': 'display: block; color: blue; text-decoration: underline; cursor: pointer;'
                     });
+                    
 
                     var likesLabel = $('<div>', {
                         'class': 'likes-label',

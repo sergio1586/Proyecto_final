@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil de Usuario - PixelMeet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/Styles/estilo.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/script/scriptPerfilUsuario.js"></script>
+</head>
+<body>
+    <div class="d-flex">
+        <nav class="menu-lateral">
+            <a href="/feed" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Inicio">
+                <img src="/images/pagina-de-inicio.png" alt="Inicio" class="icono-nav">
+            </a>
+            <a href="/home" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Perfil">
+                <img src="/images/usuario.png" alt="Perfil" class="icono-nav">
+            </a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#uploadModal" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Subir foto">
+                <img src="/images/camara.png" alt="Subir foto" class="icono-nav">
+            </a>
+        </nav>
+        <main class="contenido flex-grow-1">
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-auto d-flex align-items-center justify-content-center">
+                        <div class="d-flex align-items-center">
+                            <img id="fotoperfil" class="perfil-foto me-3" alt="Foto de perfil"/>
+                            <div class="datos">
+                                <h2 id="nick_usuario"></h2>
+                                <div class="d-flex stat-line">
+                                    <p id="publicaciones">0 publicaciones</p>
+                                    <p id="seguidores">0 seguidores</p>
+                                    <p id="seguidos">0 seguidos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="text-center mt-4">Publicaciones</h3>
+                <div class="galeria d-flex flex-wrap justify-content-center" id="galeria">
+                    <!-- Aquí se mostrarán las imágenes recuperadas de la base de datos -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal para ver imágenes en grande -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-0 border-0">
+                <div class="modal-body p-0 text-center">
+                    <img id="modalImage" class="img-fluid" alt="Imagen grande"/>
+                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">
+                        <img src="/images/cerrar-simbolo.png" alt="cerrar">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
