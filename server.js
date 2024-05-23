@@ -189,12 +189,13 @@ app.get('/perfil/:username', auth, async (req, res) => {
     res.send(contenido);
 });
 
-// Ruta para obtener los datos del perfil de un usuario específico
 app.get('/perfil-data/:username', auth, async (req, res) => {
     const username = req.params.username;
     const usuario = await Usuario.findOne({ username });
 
     if (usuario) {
+        const imagenPerfil = usuario.imagenPerfil ? usuario.imagenPerfil.replace(/\\/g, '/').replace('public/', '') : 'images/default-profile.png';
+        console.log('Imagen de perfil:', imagenPerfil); // Agregar consola de depuración
         res.status(200).json({
             nombre: usuario.nombre,
             apellidos: usuario.apellidos,
@@ -202,12 +203,13 @@ app.get('/perfil-data/:username', auth, async (req, res) => {
             seguidores: usuario.seguidores.length,
             seguidos: usuario.seguidos.length,
             publicaciones: usuario.publicaciones.length,
-            imagenPerfil: usuario.imagenPerfil
+            imagenPerfil: imagenPerfil // Ruta correcta para la imagen
         });
     } else {
         res.status(404).json({ message: 'Usuario no encontrado' });
     }
 });
+
 
 // Ruta para obtener las publicaciones de un usuario específico
 app.get('/publicaciones-de-usuario/:username', auth, async (req, res) => {
