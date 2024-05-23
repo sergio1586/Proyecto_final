@@ -65,7 +65,11 @@ app.get('/feed', auth, (req, res) => {
     res.setHeader('Content-type', 'text/html');
     res.send(contenido);
 });
-
+app.get('/configuracion', auth, (req, res) => {
+    var contenido = fs.readFileSync('public/configuracion.html', 'utf8');
+    res.setHeader('Content-type', 'text/html');
+    res.send(contenido);
+});
 app.get('/home', auth, (req, res) => {
     const username = req.session.user;
     if (username) {
@@ -160,16 +164,19 @@ app.get('/perfil', auth, async (req, res) => {
             nombre: usuario.nombre,
             apellidos: usuario.apellidos,
             username: usuario.username,
+            fechaNacimiento: usuario.fechaNacimiento.toISOString().split('T')[0], // Formatear la fecha
             seguidores: usuario.seguidores.length,
             seguidos: usuario.seguidos.length,
             publicaciones: usuario.publicaciones.length,
-            imagenPerfil: usuario.imagenPerfil
+            imagenPerfil: usuario.imagenPerfil,
+            etiquetas: usuario.etiquetas
         });
     } catch (error) {
         console.error('Error al obtener el perfil del usuario:', error);
         res.status(500).json({ message: 'Error del servidor' });
     }
 });
+
 app.get('/currentUser', auth, (req, res) => {
     const username = req.session.user;
     res.json({ username });
@@ -411,7 +418,34 @@ app.post('/me-gusta', auth, async (req, res) => {
         res.status(500).json({ message: 'Error del servidor' });
     }
 });
+app.post('/actualizar-perfil', auth, upload.single('imagenPerfil'), async (req, res) => {
+    try {
+        const usuarioId = req.session.userId;
+        const { nombre, apellidos, fechaNacimiento, etiquetas } = req.body;
 
+        const usuario = await Usuario.findById(usuarioId);
+        if (!usuario) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        usuario.nombre = nombre;
+        usuario.apellidos = apellidos;
+        usuario.fechaNacimiento = new Date(fechaNacimiento);
+        usuario.etiquetas = JSON.parse(etiquetas);
+
+        if (req.file) {
+            const imagenPerfilPath = req.file.path;
+            usuario.imagenPerfil = imagenPerfilPath;
+        }
+
+        await usuario.save();
+        res.status(200).json({ message: 'Perfil actualizado correctamente' });
+    } catch (error) {
+        console.error('Error al actualizar el perfil:', error);
+        res.status(500).json({ message: 'Error al actualizar el perfil' });
+    }
+});
+//PETICIONES DE BORRAR
 app.delete('/delete-photo/:photoId', auth, async (req, res) => {
     try {
         const usuarioId = req.session.userId;

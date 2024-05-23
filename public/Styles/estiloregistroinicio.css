@@ -86,4 +86,31 @@ body {
   .tag.selected {
     background-color: #0056b3;
   }
-  
+  /*Para la pagina de configuracion salga el menu lateral*/
+  .menu-lateral {
+    background-color: #343a40; /* Un color más moderno y neutral */
+    color: white;
+    padding: 20px;
+    min-height: 100vh; /* Asegura que el menú cubra toda la altura */
+    width: 100px;
+}
+
+.menu-lateral .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+}
+
+.menu-lateral .nav-link:hover {
+    background-color: #495057;
+}
+
+.icono-nav {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
