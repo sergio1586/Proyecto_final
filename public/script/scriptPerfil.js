@@ -113,9 +113,20 @@ function cargarPublicacionesUsuario() {
 
                     $.each(publicacion.comentarios, function(index, comentario) {
                         var commentElement = $('<div>', {
-                            'class': 'comment',
-                            'text': `@${comentario.usuario}: ${comentario.texto}`
+                            'class': 'comment'
                         });
+
+                        var userElement = $('<span>', {
+                            'class': 'comment-user',
+                            'html': `<strong>@${comentario.usuario}</strong>` // Usuario en negrita
+                        });
+
+                        var textElement = $('<span>', {
+                            'class': 'comment-text',
+                            'text': `: ${comentario.texto}`
+                        });
+
+                        commentElement.append(userElement).append(textElement);
                         commentsContainer.append(commentElement);
                     });
 

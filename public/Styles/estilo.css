@@ -9,7 +9,15 @@ body, html {
     background-color: #343a40; /* Un color más moderno y neutral */
     color: white;
     padding: 20px;
-    min-height: 100vh; /* Asegura que el menú cubra toda la altura */
+    min-height: 100vh; 
+    /* estas lineas para que el muno permanezca fijo en el lateral */
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .menu-lateral .nav-link {
