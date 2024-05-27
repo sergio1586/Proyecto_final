@@ -194,7 +194,7 @@ app.get('/perfil-data/:username', auth, async (req, res) => {
     const usuario = await Usuario.findOne({ username });
 
     if (usuario) {
-        const imagenPerfil = usuario.imagenPerfil ? usuario.imagenPerfil.replace(/\\/g, '/').replace('public/', '') : 'images/default-profile.png';
+        const imagenPerfil = usuario.imagenPerfil ? '/'+usuario.imagenPerfil.replace('public\\', '') : 'images/default-profile.png';
         console.log('Imagen de perfil:', imagenPerfil); // Agregar consola de depuración
         res.status(200).json({
             nombre: usuario.nombre,
@@ -209,6 +209,7 @@ app.get('/perfil-data/:username', auth, async (req, res) => {
         res.status(404).json({ message: 'Usuario no encontrado' });
     }
 });
+
 
 
 // Ruta para obtener las publicaciones de un usuario específico
