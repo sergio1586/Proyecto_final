@@ -282,19 +282,26 @@ app.post('/upload', auth, upload.single('imagen'), async (req, res) => {
     try {
         const imagePath = req.file.path;
         const usuarioId = req.session.userId;
-        
+        const { categoria } = req.body; // Obtener la categoría del cuerpo de la solicitud
+
+        if (!categoria) {
+            return res.status(400).json({ message: 'La categoría es requerida' });
+        }
+
         const nuevaPublicacion = {
-            imagePath: imagePath
+            imagePath: imagePath,
+            categoria: categoria // Agregar la categoría a la nueva publicación
         };
-        
+
         await Usuario.findByIdAndUpdate(usuarioId, { $push: { publicaciones: nuevaPublicacion } });
-        
+
         res.status(200).json({ message: 'Imagen subida correctamente', imagePath: imagePath });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error al subir la imagen' });
     }
 });
+
 // Ruta para seguir a un usuario
 app.post('/seguir', auth, async (req, res) => {
     try {

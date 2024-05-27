@@ -79,6 +79,17 @@
                                 <label for="inputImagen" class="form-label">Selecciona una imagen</label>
                                 <input type="file" class="form-control" id="inputImagen" required>
                             </div>
+                            <div class="mb-3">
+                                <label for="categoria" class="form-label">Categoría</label>
+                                <select class="form-control" id="categoria" required>
+                                    <option value="">Selecciona una categoría</option>
+                                    <option value="landscape">Paisaje</option>
+                                    <option value="retrato">Retrato</option>
+                                    <option value="macro">Macro</option>
+                                    <option value="arquitectura">Arquitectura</option>
+                                    <option value="naturaleza">Naturaleza</option>
+                                </select>
+                            </div>
                             <button type="button" class="btn btn-primary" onclick="subirImagen()">Subir Imagen</button>
                         </form>
                     </div>

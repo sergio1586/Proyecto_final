@@ -15,7 +15,8 @@ const publicacionSchema = new mongoose.Schema({
     imagePath: String,
     fecha: { type: Date, default: Date.now },
     meGustas: { type: Number, default: 0 },
-    comentarios: [comentarioSchema]
+    comentarios: [comentarioSchema],
+    categoria: { type: String, required: true }
 });
 
 // Esquema de los usuarios

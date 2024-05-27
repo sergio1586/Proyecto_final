@@ -122,8 +122,10 @@ function cargarPublicacionesDeUsuario(username) {
 }
 function subirImagen() {
     const fileInput = document.getElementById('inputImagen');
+    const categoriaInput = document.getElementById('categoria'); // Obtener el campo de categoría
     const formData = new FormData();
     formData.append('imagen', fileInput.files[0]);
+    formData.append('categoria', categoriaInput.value); // Añadir la categoría al formulario
 
     $.ajax({
         type: 'POST',
@@ -138,14 +140,15 @@ function subirImagen() {
 
             // Cerrar el modal después de la subida exitosa
             $('#uploadModal').modal('hide');
-            cargarPublicacionesUsuario();
-            cargarPerfil(); // Actualizar datos del perfil después de subir la imagen
+            cargarPublicacionesDeUsuario(username);
+            cargarPerfilUsuario(username);
         },
         error: function (error) {
             console.error('Error al subir la imagen:', error);
         }
     });
 }
+
 function addLike(publicacionId) {
     $.ajax({
         type: 'POST',
