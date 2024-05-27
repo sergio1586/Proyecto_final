@@ -139,8 +139,10 @@ function cargarPublicacionesUsuario() {
 }
 function subirImagen() {
     const fileInput = document.getElementById('inputImagen');
+    const descripcion = document.getElementById('inputDescripcion');
     const formData = new FormData();
     formData.append('imagen', fileInput.files[0]);
+    formData.append('descripcion', descripcion.value); 
 
     $.ajax({
         type: 'POST',

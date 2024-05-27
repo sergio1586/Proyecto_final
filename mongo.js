@@ -14,6 +14,7 @@ const comentarioSchema = new mongoose.Schema({
 const publicacionSchema = new mongoose.Schema({
     autor: String,
     imagePath: String,
+    descripcion: String,
     fecha: { type: Date, default: Date.now },
     meGustas: { type: [String], default: [] },
     comentarios: [comentarioSchema]

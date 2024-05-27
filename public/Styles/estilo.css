@@ -61,7 +61,6 @@ body, html {
     box-sizing: border-box;
 }
 
-
 .galeria-img {
     width: 100%; /* Asegura que la imagen ocupe todo el contenedor */
     height: auto;
@@ -162,6 +161,7 @@ h3.text-center {
     width: 30px; /* Ancho del ícono */
     height: 30px; /* Alto del ícono */
 }
+
 .like-button, .comment-button {
     background: none;
     border: none;
@@ -174,3 +174,33 @@ h3.text-center {
     height: 24px;
 }
 
+/* Estilo para el modal de subida de imagen */
+#uploadModal .modal-dialog {
+    max-width: 500px; /* Ajusta el tamaño del modal según sea necesario */
+}
+
+#uploadModal .modal-header {
+    border-bottom: 1px solid #dee2e6; /* Añade una línea inferior al encabezado */
+}
+
+#uploadModal .modal-body {
+    padding: 20px; /* Añade padding a la caja del cuerpo del modal */
+}
+
+#uploadModal .form-label {
+    font-weight: bold; /* Hace que las etiquetas del formulario se vean más destacadas */
+}
+
+#uploadModal .form-control {
+    margin-bottom: 15px; /* Añade un margen inferior a los campos del formulario */
+}
+
+#uploadModal .modal-footer {
+    border-top: 1px solid #dee2e6; /* Añade una línea superior al pie del modal */
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones al final */
+}
+
+#uploadModal .btn {
+    padding: 10px 20px; /* Añade padding a los botones */
+}

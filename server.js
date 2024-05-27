@@ -117,7 +117,8 @@ app.get('/cargarFeed', auth, async (req, res) => {
                     username: usuario.username,
                     imagePath: imagePath,
                     meGustas: publicacion.meGustas,
-                    comentarios: publicacion.comentarios
+                    comentarios: publicacion.comentarios,
+                    descripcion: publicacion.descripcion
                 });
             });
         });
@@ -282,10 +283,12 @@ app.post('/upload', auth, upload.single('imagen'), async (req, res) => {
         const imagePath = req.file.path;
         const usuarioId = req.session.userId;
         const usuarionick = req.session.user;
+        const descripcion = req.body.descripcion;
         
         const nuevaPublicacion = {
             imagePath: imagePath,
-            autor: usuarionick 
+            autor: usuarionick,
+            descripcion: descripcion
         };
         console.log("Se ha subido la foto con el nick"+usuarionick);
         await Usuario.findByIdAndUpdate(usuarioId, { $push: { publicaciones: nuevaPublicacion } });

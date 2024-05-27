@@ -14,7 +14,7 @@ function cargarFeed() {
                 $.each(response.publicaciones, function(index, publicacion) {
                     const imgContainer = $('<div>', {
                         'class': 'image-container',
-                        'style': 'position: relative; margin: 10px auto;'
+                        'style': 'position: relative; display: inline-block; margin: 10px;'
                     });
 
                     var imgElement = $('<img>', {
@@ -33,42 +33,42 @@ function cargarFeed() {
                     var userLink = $('<a>', {
                         'href': `/perfil/${publicacion.username}`,
                         'text': `@${publicacion.username}`,
-                        'style': 'color: blue; text-decoration: underline; cursor: pointer;'
+                        'style': 'color: white; text-decoration: underline; cursor: pointer;'
                     });
 
                     userLabel.append(userLink);
 
                     var descripcionDiv = $('<div>', {
-                        'class': 'descripcion'
+                        'class': 'descripcion',
+                        'text': `: ${publicacion.descripcion}`
                     });
 
-                    if (publicacion.descripcion) {
-                        var shortText = `<strong>${publicacion.username}</strong> ${publicacion.descripcion.substring(0, 100)}... `;
-                        var fullText = `<strong>${publicacion.username}</strong> ${publicacion.descripcion}`;
-                        var isShort = true;
-                    
-                        if (publicacion.descripcion.length > 100) {
-                            descripcionDiv.html(shortText);
-                    
-                            var verMasButton = $('<button>', {
-                                'text': 'Ver más',
-                                'style': 'background: none; border: none; color: blue; text-decoration: underline; cursor: pointer;',
-                                'click': function(e) {
-                                    e.preventDefault();
-                                    toggleDescription(descripcionDiv, verMasButton, shortText, fullText, isShort).then(updatedState => {
-                                        isShort = updatedState;
-                                    });
+                    // Añadir lógica de "Ver más" para descripciones largas
+                    if (descripcionDiv.text().length > 100) {
+                        var shortText = descripcionDiv.text().substring(0, 100) + "... ";
+                        var fullText = descripcionDiv.text();
+
+                        descripcionDiv.text(shortText);
+
+                        var verMasLink = $('<a>', {
+                            'href': '#',
+                            'text': 'Ver más',
+                            'click': function(e) {
+                                e.preventDefault();
+                                if ($(this).text() === 'Ver más') {
+                                    $(this).text('Ver menos');
+                                    descripcionDiv.text(fullText);
+                                } else {
+                                    $(this).text('Ver más');
+                                    descripcionDiv.text(shortText);
                                 }
-                            });
-                    
-                            descripcionDiv.append(verMasButton);
-                        } else {
-                            descripcionDiv.html(fullText);
-                        }
-                    } else {
-                        descripcionDiv.html(`<strong>${publicacion.username}</strong>`);
+                            }
+                        });
+
+                        descripcionDiv.append(verMasLink);
                     }
-                    
+
+                    userLabel.append(descripcionDiv);
 
                     var likesLabel = $('<div>', {
                         'class': 'likes-label',
@@ -136,7 +136,6 @@ function cargarFeed() {
 
                         imgContainer.append(imgElement)
                             .append(userLabel)
-                            .append(descripcionDiv)
                             .append(likesLabel)
                             .append(likeButton)
                             .append(commentButton)
@@ -159,17 +158,7 @@ function cargarFeed() {
         }
     });
 }
-function toggleDescription(descripcionDiv, verMasButton, shortText, fullText, isShort) {
-    return new Promise((resolve) => {
-        if (isShort) {
-            descripcionDiv.html(fullText).append(verMasButton.text('Ver menos'));
-            resolve(false);
-        } else {
-            descripcionDiv.html(shortText).append(verMasButton.text('Ver más'));
-            resolve(true);
-        }
-    });
-}
+
 function addLike(publicacionId) {
     $.ajax({
         type: 'POST',
