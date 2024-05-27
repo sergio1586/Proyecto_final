@@ -87,3 +87,14 @@ body {
     width: 20px;
     height: 20px;
 }
+.like-button, .comment-button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.like-button img, .comment-button img {
+    width: 24px;
+    height: 24px;
+}

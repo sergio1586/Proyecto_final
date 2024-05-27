@@ -6,7 +6,7 @@ function cargarFeed() {
     $.ajax({
         type: 'GET',
         url: '/cargarFeed',
-        success: function (response) {
+        success: function(response) {
             if (response && response.publicaciones && response.publicaciones.length > 0) {
                 var feed = $('#feed'); // Selecciona el contenedor con jQuery
                 feed.empty(); // Limpia el contenido existente
@@ -32,88 +32,92 @@ function cargarFeed() {
                         'text': `@${publicacion.username}`,
                         'style': 'display: block; color: blue; text-decoration: underline; cursor: pointer;'
                     });
-                    
 
                     var likesLabel = $('<div>', {
                         'class': 'likes-label',
                         'text': `${publicacion.meGustas} Me gusta`
                     });
 
-                    var likeButton = $('<button>', {
-                        'class': 'like-button',
-                        'text': 'Me gusta',
-                        'click': function() {
-                            addLike(publicacion._id);
-                        }
-                    });
-
-                    var commentButton = $('<button>', {
-                        'class': 'comment-button',
-                        'text': 'Comentar',
-                        'click': function() {
-                            var comentarioTexto = prompt('Introduce tu comentario:');
-                            if (comentarioTexto) {
-                                addComment(publicacion._id, comentarioTexto);
+                    // Uso de la función showLike para obtener el HTML del botón de me gusta
+                    showLike(publicacion._id).then(likeButtonHtml => {
+                        var likeButton = $('<button>', {
+                            'class': 'like-button',
+                            'html': likeButtonHtml,
+                            'click': function() {
+                                addLike(publicacion._id);
                             }
-                        }
-                    });
-
-                    var followButton = $('<button>', {
-                        'class': 'follow-button',
-                        'text': 'Seguir',
-                        'click': function() {
-                            seguirUsuario(publicacion.username);
-                        }
-                    });
-
-                    var unfollowButton = $('<button>', {
-                        'class': 'unfollow-button',
-                        'text': 'Dejar de Seguir',
-                        'click': function() {
-                            dejarDeSeguirUsuario(publicacion.username);
-                        }
-                    });
-
-                    // Botón para eliminar la publicación
-                    var deleteButton = $('<button>', {
-                        'class': 'delete-button',
-                        'text': 'Eliminar',
-                        'click': function() {
-                            if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
-                                deletePhoto(publicacion._id);
-                            }
-                        }
-                    });
-
-                    var commentsContainer = $('<div>', {
-                        'class': 'comments-container'
-                    });
-
-                    $.each(publicacion.comentarios, function(index, comentario) {
-                        var commentElement = $('<div>', {
-                            'class': 'comment',
-                            'text': `@${comentario.usuario}: ${comentario.texto}`
                         });
-                        commentsContainer.append(commentElement);
+
+                        var commentButton = $('<button>', {
+                            'class': 'comment-button',
+                            'text': 'Comentar',
+                            'click': function() {
+                                var comentarioTexto = prompt('Introduce tu comentario:');
+                                if (comentarioTexto) {
+                                    addComment(publicacion._id, comentarioTexto);
+                                }
+                            }
+                        });
+
+                        var followButton = $('<button>', {
+                            'class': 'follow-button',
+                            'text': 'Seguir',
+                            'click': function() {
+                                seguirUsuario(publicacion.username);
+                            }
+                        });
+
+                        var unfollowButton = $('<button>', {
+                            'class': 'unfollow-button',
+                            'text': 'Dejar de Seguir',
+                            'click': function() {
+                                dejarDeSeguirUsuario(publicacion.username);
+                            }
+                        });
+
+                        // Botón para eliminar la publicación
+                        var deleteButton = $('<button>', {
+                            'class': 'delete-button',
+                            'text': 'Eliminar',
+                            'click': function() {
+                                if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
+                                    deletePhoto(publicacion._id);
+                                }
+                            }
+                        });
+
+                        var commentsContainer = $('<div>', {
+                            'class': 'comments-container'
+                        });
+
+                        $.each(publicacion.comentarios, function(index, comentario) {
+                            var commentElement = $('<div>', {
+                                'class': 'comment',
+                                'text': `@${comentario.usuario}: ${comentario.texto}`
+                            });
+                            commentsContainer.append(commentElement);
+                        });
+
+                        imgContainer.append(imgElement)
+                            .append(userLabel)
+                            .append(likesLabel)
+                            .append(likeButton) // Agregar el botón de me gusta aquí
+                            .append(commentButton)
+                            .append(followButton)
+                            .append(unfollowButton)
+                            .append(deleteButton)
+                            .append(commentsContainer);
+
+                        feed.append(imgContainer);
+                    }).catch(error => {
+                        console.error('Error al obtener el botón de me gusta:', error);
                     });
-
-                    imgContainer.append(imgElement)
-                        .append(userLabel)
-                        .append(likesLabel)
-                        .append(likeButton)
-                        .append(commentButton)
-                        .append(followButton)
-                        .append(unfollowButton)
-                        .append(deleteButton) // Añadir el botón de eliminar
-                        .append(commentsContainer);
-
-                    feed.append(imgContainer);
                 });
             } else {
                 console.log('No hay publicaciones en el feed.');
             }
         },
-        error: function (error) {
+        error: function(error) {
             console.error('Error al cargar el feed:', error);
         }
     });
@@ -126,12 +130,41 @@ function addLike(publicacionId) {
         data: JSON.stringify({ publicacionId: publicacionId }),
         contentType: 'application/json',
         success: function(response) {
-            alert(response.message);
+           // alert(response.message);
+            if (response.status) {
+                console.log(response.status);
+            } else {
+                console.log(response.status);
+            }
             cargarFeed(); // Recargar el feed para actualizar el número de "me gusta"
         },
         error: function(error) {
             console.error('Error al añadir "me gusta":', error);
         }
+    });
+}
+
+function showLike(publicacionId) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: 'POST',
+            url: '/me-gusta-o-no',
+            data: JSON.stringify({ publicacionId: publicacionId }),
+            contentType: 'application/json',
+            success: function(response) {
+                var likebutton;
+                if (response.status) {
+                    likebutton = '<img src="/images/me-gusta.png" alt="Me gusta">';
+                } else {
+                    likebutton = '<img src="/images/me-gusta2.png" alt="Me gusta">';
+                }
+                resolve(likebutton);
+            },
+            error: function(error) {
+                console.error('Error al verificar "me gusta":', error);
+                reject(error);
+            }
+        });
     });
 }
 
@@ -187,20 +220,6 @@ function dejarDeSeguirUsuario(username) {
             } else {
                 console.error('Error al dejar de seguir al usuario:', error);
             }
-        }
-    });
-}
-
-function deletePhoto(photoId) {
-    $.ajax({
-        type: 'DELETE',
-        url: `/delete-photo/${photoId}`,
-        success: function(response) {
-            alert(response.message);
-            cargarFeed(); // Recargar el feed para actualizar las publicaciones
-        },
-        error: function(error) {
-            console.error('Error al eliminar la foto:', error);
         }
     });
 }
