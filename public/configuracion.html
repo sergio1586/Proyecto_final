@@ -62,5 +62,25 @@
         <button type="button" onclick="actualizarPerfil()">Actualizar Perfil</button>
         <p>¿Deseas salir? <a href="/">Cerrar sesión</a></p>
     </div>
+        <!-- Modal para subir imágenes -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadModalLabel">Subir Imagen</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="inputImagen" class="form-label">Selecciona una imagen</label>
+                                <input type="file" class="form-control" id="inputImagen" required>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="subirImagen()">Subir Imagen</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>
 </html>

@@ -120,7 +120,32 @@ function cargarPublicacionesDeUsuario(username) {
         }
     });
 }
+function subirImagen() {
+    const fileInput = document.getElementById('inputImagen');
+    const formData = new FormData();
+    formData.append('imagen', fileInput.files[0]);
 
+    $.ajax({
+        type: 'POST',
+        url: '/upload',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            console.log('Imagen subida correctamente');
+            console.log('Ruta de la imagen:', response.imagePath);
+            alert('Imagen subida correctamente');
+
+            // Cerrar el modal después de la subida exitosa
+            $('#uploadModal').modal('hide');
+            cargarPublicacionesUsuario();
+            cargarPerfil(); // Actualizar datos del perfil después de subir la imagen
+        },
+        error: function (error) {
+            console.error('Error al subir la imagen:', error);
+        }
+    });
+}
 function addLike(publicacionId) {
     $.ajax({
         type: 'POST',
