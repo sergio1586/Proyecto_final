@@ -45,8 +45,7 @@ function cargarPublicacionesDeUsuario(username) {
 
                 $.each(response.publicaciones, function(index, publicacion) {
                     const imgContainer = $('<div>', {
-                        'class': 'image-container',
-                        'style': 'position: relative; display: inline-block; margin: 10px;'
+                        'class': 'col-md-4 col-sm-6 image-container'
                     });
 
                     var imgElement = $('<img>', {
@@ -65,20 +64,18 @@ function cargarPublicacionesDeUsuario(username) {
 
                     var likeButton = $('<button>', {
                         'class': 'like-button',
-                        'text': 'Me gusta',
-                        'click': function() {
-                            addLike(publicacion._id);
-                        }
+                        'html': '<img src="/images/me-gusta.png" alt="Me gusta">'
+                    }).on('click', function() {
+                        addLike(publicacion._id);
                     });
 
                     var commentButton = $('<button>', {
                         'class': 'comment-button',
-                        'text': 'Comentar',
-                        'click': function() {
-                            var comentarioTexto = prompt('Introduce tu comentario:');
-                            if (comentarioTexto) {
-                                addComment(publicacion._id, comentarioTexto);
-                            }
+                        'html': '<img src="/images/comente.png" alt="Comentar">'
+                    }).on('click', function() {
+                        var comentarioTexto = prompt('Introduce tu comentario:');
+                        if (comentarioTexto) {
+                            addComment(publicacion._id, comentarioTexto);
                         }
                     });
 

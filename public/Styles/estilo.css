@@ -55,8 +55,12 @@ body, html {
 
 .image-container {
     position: relative;
-    flex: calc(33.333% - 14px); /* Ajusta para tres columnas, contando el espacio */
+    flex: 1 1 calc(33.333% - 20px); /* Ajusta para tres columnas, contando el espacio */
+    max-width: calc(33.333% - 20px); /* Ajusta el tamaño máximo para tres columnas */
+    margin-bottom: 20px; /* Espacio entre filas */
+    box-sizing: border-box;
 }
+
 
 .galeria-img {
     width: 100%; /* Asegura que la imagen ocupe todo el contenedor */
@@ -158,3 +162,15 @@ h3.text-center {
     width: 30px; /* Ancho del ícono */
     height: 30px; /* Alto del ícono */
 }
+.like-button, .comment-button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.like-button img, .comment-button img {
+    width: 24px;
+    height: 24px;
+}
+
