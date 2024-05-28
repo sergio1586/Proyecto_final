@@ -51,20 +51,26 @@
         </main>
     </div>
 
-    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">Subir Imagen</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadForm" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="inputImagen" class="form-label">Selecciona una imagen</label>
-                            <input type="file" class="form-control" id="inputImagen" required>
-                        </div>
-                        <div class="mb-3">
+
+    <!-- Modal para subir imágenes -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Subir Imagen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="inputImagen" class="form-label">Selecciona una imagen</label>
+                        <input type="file" class="form-control" id="inputImagen" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputDescripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="inputDescripcion" rows="3" required></textarea>
+                    </div>
+                  <div class="mb-3">
                             <label for="categoria" class="form-label">Categoría</label>
                             <select class="form-control" id="categoria" required>
                                 <option value="">Selecciona una categoría</option>
@@ -75,13 +81,13 @@
                                 <option value="naturaleza">Naturaleza</option>
                             </select>
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="subirImagen()">Subir Imagen</button>
-                    </form>
-                </div>
+                    <button type="button" class="btn btn-primary" onclick="subirImagen()">Subir Imagen</button>
+                </form>
             </div>
         </div>
     </div>
-    
+</div>
+
 
     
     <!-- Modal para ver imágenes en grande -->

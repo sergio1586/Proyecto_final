@@ -117,7 +117,8 @@ app.get('/cargarFeed', auth, async (req, res) => {
                     username: usuario.username,
                     imagePath: imagePath,
                     meGustas: publicacion.meGustas,
-                    comentarios: publicacion.comentarios
+                    comentarios: publicacion.comentarios,
+                    descripcion: publicacion.descripcion
                 });
             });
         });
@@ -282,16 +283,20 @@ app.post('/upload', auth, upload.single('imagen'), async (req, res) => {
     try {
         const imagePath = req.file.path;
         const usuarioId = req.session.userId;
+
+        const usuarionick = req.session.user;
+        const descripcion = req.body.descripcion;
         const { categoria } = req.body; // Obtener la categoría del cuerpo de la solicitud
 
         if (!categoria) {
             return res.status(400).json({ message: 'La categoría es requerida' });
-        }
-
         const nuevaPublicacion = {
             imagePath: imagePath,
+            autor: usuarionick,
+            descripcion: descripcion,
             categoria: categoria // Agregar la categoría a la nueva publicación
         };
+        console.log("Se ha subido la foto con el nick"+usuarionick);
 
         await Usuario.findByIdAndUpdate(usuarioId, { $push: { publicaciones: nuevaPublicacion } });
 
@@ -404,6 +409,7 @@ app.post('/comentario', auth, async (req, res) => {
 app.post('/me-gusta', auth, async (req, res) => {
     try {
         const { publicacionId } = req.body;
+        const usernick = req.session.user;
 
         // Buscar la publicación en todos los usuarios
         const usuario = await Usuario.findOne({ 'publicaciones._id': publicacionId });
@@ -418,16 +424,64 @@ app.post('/me-gusta', auth, async (req, res) => {
             return res.status(404).json({ message: 'Publicación no encontrada' });
         }
 
-        publicacion.meGustas += 1;
+        // Verificar si el usuario ya ha dado "me gusta"
+        const meGustaIndex = publicacion.meGustas.indexOf(usernick);
 
-        await usuario.save();
+        if (meGustaIndex === -1) {
+            // No ha dado "me gusta", añadirlo
+            publicacion.meGustas.push(usernick);
+            await usuario.save();
+            res.status(200).json({ status: true, message: 'Me gusta añadido correctamente' });
+        } else {
+            // Ya ha dado "me gusta", eliminarlo
+            publicacion.meGustas.splice(meGustaIndex, 1);
+            await usuario.save();
+            res.status(200).json({ status: false, message: 'Me gusta eliminado correctamente' });
+        }
 
-        res.status(200).json({ message: 'Me gusta añadido correctamente' });
     } catch (error) {
-        console.error('Error al añadir "me gusta":', error);
+        console.error('Error al gestionar "me gusta":', error);
         res.status(500).json({ message: 'Error del servidor' });
     }
 });
+app.post('/me-gusta-o-no', auth, async (req, res) => {
+    try {
+        const { publicacionId } = req.body;
+        const usernick = req.session.user;
+
+        // Buscar la publicación en todos los usuarios
+        const usuario = await Usuario.findOne({ 'publicaciones._id': publicacionId });
+
+        if (!usuario) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+
+        const publicacion = usuario.publicaciones.id(publicacionId);
+
+        if (!publicacion) {
+            return res.status(404).json({ message: 'Publicación no encontrada' });
+        }
+ 
+        // Verificar si el usuario ya ha dado "me gusta"
+        const meGustaIndex = publicacion.meGustas.indexOf(usernick);
+
+        if (meGustaIndex === -1) {
+            // No ha dado "me gusta", añadirlo
+            
+            res.status(200).json({ status: true});
+        } else {
+            // Ya ha dado "me gusta", eliminarlo
+            
+            res.status(200).json({ status: false});
+        }
+
+    } catch (error) {
+        console.error('Error al gestionar "me gusta":', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+});
+
+
 app.post('/actualizar-perfil', auth, upload.single('imagenPerfil'), async (req, res) => {
     try {
         const usuarioId = req.session.userId;

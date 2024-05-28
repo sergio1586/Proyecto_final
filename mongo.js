@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 // URI de conexión a MongoDB
-const mongoDBURI = "mongodb+srv://sergio1586:mtnjlqNeyzOg7mdO@cluster0.s7g0oqn.mongodb.net/myDatabaseName";
+const mongoDBURI = "mongodb+srv://mgonzalezn97:yCd7sRyoc42yFuP8@cluster0.d3aivsk.mongodb.net/MEDAC";
 
 // Esquema de los comentarios
 const comentarioSchema = new mongoose.Schema({
@@ -12,11 +12,13 @@ const comentarioSchema = new mongoose.Schema({
 
 // Esquema de las publicaciones
 const publicacionSchema = new mongoose.Schema({
+    autor: String,
     imagePath: String,
+    descripcion: String,
     fecha: { type: Date, default: Date.now },
-    meGustas: { type: Number, default: 0 },
+    meGustas: { type: [String], default: [] },
     comentarios: [comentarioSchema],
-    categoria: { type: String, required: true }
+    categoria: { type: String }
 });
 
 // Esquema de los usuarios
