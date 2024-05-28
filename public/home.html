@@ -22,8 +22,8 @@
             <a href="#" data-bs-toggle="modal" data-bs-target="#uploadModal" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Subir foto">
                 <img src="images/camara.png" alt="Subir foto" class="icono-nav">
             </a>
-            <a href="/configuracion" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Perfil">
-                <img src="images/configuracion.png" alt="Perfil" class="icono-nav">
+            <a href="/configuracion" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="right" title="Configuración">
+                <img src="images/configuracion.png" alt="Configuración" class="icono-nav">
             </a>
         </nav>
         <main class="contenido flex-grow-1">
@@ -51,6 +51,7 @@
         </main>
     </div>
 
+
     <!-- Modal para subir imágenes -->
 <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -69,6 +70,17 @@
                         <label for="inputDescripcion" class="form-label">Descripción</label>
                         <textarea class="form-control" id="inputDescripcion" rows="3" required></textarea>
                     </div>
+                  <div class="mb-3">
+                            <label for="categoria" class="form-label">Categoría</label>
+                            <select class="form-control" id="categoria" required>
+                                <option value="">Selecciona una categoría</option>
+                                <option value="landscape">Paisaje</option>
+                                <option value="retrato">Retrato</option>
+                                <option value="macro">Macro</option>
+                                <option value="arquitectura">Arquitectura</option>
+                                <option value="naturaleza">Naturaleza</option>
+                            </select>
+                        </div>
                     <button type="button" class="btn btn-primary" onclick="subirImagen()">Subir Imagen</button>
                 </form>
             </div>
@@ -77,6 +89,7 @@
 </div>
 
 
+    
     <!-- Modal para ver imágenes en grande -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
