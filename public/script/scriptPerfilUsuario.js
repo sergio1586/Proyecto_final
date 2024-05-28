@@ -85,9 +85,20 @@ function cargarPublicacionesDeUsuario(username) {
 
                     $.each(publicacion.comentarios, function(index, comentario) {
                         var commentElement = $('<div>', {
-                            'class': 'comment',
-                            'text': `@${comentario.usuario}: ${comentario.texto}`
+                            'class': 'comment'
                         });
+
+                        var userElement = $('<span>', {
+                            'class': 'comment-user',
+                            'html': `<strong>@${comentario.usuario}</strong>` // Usuario en negrita
+                        });
+
+                        var textElement = $('<span>', {
+                            'class': 'comment-text',
+                            'text': `: ${comentario.texto}`
+                        });
+
+                        commentElement.append(userElement).append(textElement);
                         commentsContainer.append(commentElement);
                     });
 
@@ -106,6 +117,34 @@ function cargarPublicacionesDeUsuario(username) {
         },
         error: function (error) {
             console.error('Error al cargar las imágenes del usuario:', error);
+        }
+    });
+}
+function subirImagen() {
+    const fileInput = document.getElementById('inputImagen');
+    const categoriaInput = document.getElementById('categoria'); // Obtener el campo de categoría
+    const formData = new FormData();
+    formData.append('imagen', fileInput.files[0]);
+    formData.append('categoria', categoriaInput.value); // Añadir la categoría al formulario
+
+    $.ajax({
+        type: 'POST',
+        url: '/upload',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            console.log('Imagen subida correctamente');
+            console.log('Ruta de la imagen:', response.imagePath);
+            alert('Imagen subida correctamente');
+
+            // Cerrar el modal después de la subida exitosa
+            $('#uploadModal').modal('hide');
+            cargarPublicacionesDeUsuario(username);
+            cargarPerfilUsuario(username);
+        },
+        error: function (error) {
+            console.error('Error al subir la imagen:', error);
         }
     });
 }
